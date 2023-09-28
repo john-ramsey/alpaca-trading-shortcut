@@ -1,0 +1,6 @@
+.venv/
+.vscode/
+testing.ipynb
+.env
+__pycache__/
+.DS_Store

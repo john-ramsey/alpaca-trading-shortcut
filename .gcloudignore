@@ -1,0 +1,16 @@
+.venv/
+.vscode/
+testing.ipynb
+scripts/
+.env
+.gitignore
+poetry.lock
+pyproject.toml
+.dockerignore
+.gcloudignore
+__pycache__/
+poetry.lock
+pyproject.toml
+notebooks/
+sample.env
+.DS_Store
