@@ -92,7 +92,7 @@ class alpaca_interfacer:
         return resp
 
     def sell_random_stock(self) -> str:
-        positions = self.position_handler.current_positions
+        positions = self.position_handler.get_closable_positions()
         random.shuffle(positions)
         sale_made = False
 
@@ -105,10 +105,11 @@ class alpaca_interfacer:
                 resp = self.order_handler.sell_random_quantity(
                     symbol=p.symbol,
                     asset_name=name,
-                    max_qty=int(p.qty),
+                    max_qty=int(p.qty_available),
                     price=p.current_price,
                 )
                 sale_made = True
+
             except APIError as e:
                 cloud_logger.error(f"Failed to sell {p.symbol}: {e}")
                 continue
@@ -140,8 +141,8 @@ class alpaca_interfacer:
         return can_buy
 
     def _can_sell(self) -> bool:
-        positions = self.position_handler.current_positions
+        closable_positions = self.position_handler.get_closable_positions()
 
-        can_sell = len(positions) > 0
+        can_sell = len(closable_positions) > 0
 
         return can_sell

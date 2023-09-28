@@ -11,6 +11,7 @@ class position_handler(alpaca_base):
     ) -> None:
         super().__init__(trading_client, api_key, secret_key)
 
+        # we have to make this API call to see if we can sell
         self.current_positions = self._get_positions()
 
     def _get_positions(self) -> list:
@@ -18,3 +19,10 @@ class position_handler(alpaca_base):
 
     def has_option_postitions(self) -> bool:
         return len(self.get_option_positions()) > 0
+
+    def get_closable_positions(self) -> list:
+        return [
+            position
+            for position in self.current_positions
+            if int(position.qty_available) > 0
+        ]
