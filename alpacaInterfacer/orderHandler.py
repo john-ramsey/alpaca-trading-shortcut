@@ -37,10 +37,11 @@ class order_handler(alpaca_base):
         symbol: str,
         asset_name: str,
         max_qty: int,
+        qty_available: int,
         price: float,
         total_unrealized_pl: float,
     ):
-        qty = random.randint(1, max_qty)
+        qty = random.randint(1, qty_available)
 
         # calculate total profit/loss to be realized
         pl_to_be_realized_per_share = total_unrealized_pl / max_qty

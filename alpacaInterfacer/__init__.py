@@ -105,7 +105,8 @@ class alpaca_interfacer:
                 resp = self.order_handler.sell_random_quantity(
                     symbol=p.symbol,
                     asset_name=name,
-                    max_qty=int(p.qty_available),
+                    max_qty=int(p.qty),
+                    qty_available=int(p.qty_available),
                     price=float(p.current_price),
                     total_unrealized_pl=float(p.unrealized_pl),
                 )
