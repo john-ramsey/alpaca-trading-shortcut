@@ -106,7 +106,8 @@ class alpaca_interfacer:
                     symbol=p.symbol,
                     asset_name=name,
                     max_qty=int(p.qty_available),
-                    price=p.current_price,
+                    price=float(p.current_price),
+                    total_unrealized_pl=float(p.unrealized_pl),
                 )
                 sale_made = True
 

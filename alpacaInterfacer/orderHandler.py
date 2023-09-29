@@ -33,23 +33,50 @@ class order_handler(alpaca_base):
         return self._parse_message(resp, asset_name, "BOUGHT", price)
 
     def sell_random_quantity(
-        self, symbol: str, asset_name: str, max_qty: int, price: float
+        self,
+        symbol: str,
+        asset_name: str,
+        max_qty: int,
+        price: float,
+        total_unrealized_pl: float,
     ):
         qty = random.randint(1, max_qty)
 
+        # calculate total profit/loss to be realized
+        pl_to_be_realized_per_share = total_unrealized_pl / max_qty
+        total_pl_to_be_realized = pl_to_be_realized_per_share * qty
+
         resp = self._place_order(symbol=symbol, side=OrderSide.SELL, qty=qty)
 
-        return self._parse_message(resp, asset_name, "SOLD", price=price)
+        return self._parse_message(
+            resp, asset_name, "SOLD", price=price, pl=total_pl_to_be_realized
+        )
 
-    def _parse_message(self, resp: str, asset_name: str, side: str, price: float):
+    def _parse_message(
+        self,
+        resp: str,
+        asset_name: str,
+        side: str,
+        price: float,
+        pl: float | None = None,
+    ):
         try:
             if resp.filled_avg_price is not None:
                 price = resp.filled_avg_price
         except:
             pass
 
+        if pl is not None:
+            pl_test = "PROFIT" if pl > 0 else "LOSS"
+            abs_pl = abs(pl)
+            pl_statement = f" for a {pl_test} of {'${:.2f}'.format(abs_pl)}"
+        else:
+            pl_statement = ""
+
         if resp.status in ("accepted", "pending_new", "filled"):
-            msg = f"{side} {resp.qty} shares of {asset_name} ({resp.symbol}) at {price} each"
+            # round to two decimal places and format
+            formatted_price = "${:.2f}".format(price)
+            msg = f"{side} {resp.qty} shares of {asset_name} ({resp.symbol}) at {formatted_price} each{pl_statement}"
         else:
             msg = f"Unknown status: {resp.status}"
 
