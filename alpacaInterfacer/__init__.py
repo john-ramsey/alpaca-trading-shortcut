@@ -68,17 +68,15 @@ class alpaca_interfacer:
                 StockLatestTradeRequest(symbol_or_symbols=a.symbol)
             )[a.symbol].price
 
+            max_spend_amount = self._get_max_spend_amount()
+
             # skip if price is too high
-            max_percent_to_spend = 0.05
-            max_spend_amount = (
-                max_percent_to_spend * self.account_handler.get_buying_power()
-            )
             if price > max_spend_amount:
                 cloud_logger.info(f"Skipping {a.symbol} because price is too high")
                 continue
 
             # get the max amount of shares we can buy
-            max_shares = int(max_spend_amount / price)
+            max_shares = max_spend_amount // price
 
             try:
                 resp = self.order_handler.buy_random_quantity(
@@ -148,3 +146,18 @@ class alpaca_interfacer:
         can_sell = len(closable_positions) > 0
 
         return can_sell
+
+    def _get_max_spend_amount(self) -> float:
+        try:
+            max_percent_to_spend = int(os.getenv("max_percent_to_spend"))
+        except:
+            cloud_logger.warning(
+                "max_percent_to_spend not set, defaulting to 0.1% of buying power"
+            )
+            max_percent_to_spend = 0.1
+
+        max_spend_amount = (
+            max_percent_to_spend / 100
+        ) * self.account_handler.get_buying_power()
+
+        return max_spend_amount

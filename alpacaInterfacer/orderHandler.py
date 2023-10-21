@@ -67,6 +67,8 @@ class order_handler(alpaca_base):
         except:
             pass
 
+        asset_name = self._truncate_asset_name(asset_name)
+
         if pl is not None:
             pl_test = "PROFIT" if pl > 0 else "LOSS"
             abs_pl = abs(pl)
@@ -96,3 +98,29 @@ class order_handler(alpaca_base):
         )
 
         return self.trading_client.submit_order(order_data=req)
+
+    def _truncate_asset_name(self, asset_name: str) -> str:
+        """
+        Truncates the asset name to the desired length. The desired length is configured in the environment variable truncated_asset_name_length.
+
+        Args:
+            asset_name (str): The name of the asset to be truncated
+
+        Returns:
+            str: The truncated asset name
+        """
+
+        desired_length = os.getenv("truncated_asset_name_length")
+
+        try:
+            desired_length = int(desired_length)
+            assert desired_length >= 1
+        except:
+            cloud_logger.warning(
+                "The truncated_asset_name_length could not be parsed. Please ensure that it is an integer greater than 0."
+            )
+            return asset_name
+
+        asset_words = asset_name.split(" ")
+
+        return " ".join(asset_words[:desired_length])
