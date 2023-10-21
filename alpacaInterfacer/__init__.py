@@ -149,7 +149,7 @@ class alpaca_interfacer:
 
     def _get_max_spend_amount(self) -> float:
         try:
-            max_percent_to_spend = int(os.getenv("max_percent_to_spend"))
+            max_percent_to_spend = float(os.getenv("max_percent_to_spend"))
         except:
             cloud_logger.warning(
                 "max_percent_to_spend not set, defaulting to 0.1% of buying power"
