@@ -4,7 +4,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from alpaca_logger.gcp_logger import cloud_logger
+from alpacaLogger.gcpLogger import cloud_logger
 
 from alpacaInterfacer.alpacaBase import alpaca_base
 

@@ -4,7 +4,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath(__file__))))
 
-from alpaca_logger.gcp_logger import cloud_logger
+from alpacaLogger.gcpLogger import cloud_logger
 
 from alpacaInterfacer.accountHandler import account_handler
 from alpacaInterfacer.positionHandler import position_handler
@@ -25,13 +25,10 @@ class alpaca_interfacer:
         if secret_key is None:
             secret_key = os.getenv("alpaca_secret")
 
-        self.trading_client = TradingClient(api_key, secret_key)
+        trading_client = TradingClient(api_key, secret_key)
         self.market_data = StockHistoricalDataClient(api_key, secret_key)
 
-        self.account_handler = account_handler(self.trading_client)
-        self.position_handler = position_handler(self.trading_client)
-        self.asset_handler = asset_handler(self.trading_client)
-        self.order_handler = order_handler(self.trading_client)
+        self._start_up_handlers(trading_client)
 
     def get_account(self) -> dict:
         return self.account_handler.account
@@ -61,8 +58,9 @@ class alpaca_interfacer:
         assets = self.asset_handler.get_us_equities()
         random.shuffle(assets)
         purchase_made = False
+        resp = None
 
-        while not purchase_made:
+        while not purchase_made and len(assets) > 0:
             a = assets.pop()
             price = self.market_data.get_stock_latest_trade(
                 StockLatestTradeRequest(symbol_or_symbols=a.symbol)
@@ -161,3 +159,9 @@ class alpaca_interfacer:
         ) * self.account_handler.get_buying_power()
 
         return max_spend_amount
+
+    def _start_up_handlers(self, trading_client):
+        self.account_handler = account_handler(trading_client)
+        self.position_handler = position_handler(trading_client)
+        self.asset_handler = asset_handler(trading_client)
+        self.order_handler = order_handler(trading_client)
