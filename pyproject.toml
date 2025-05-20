@@ -8,12 +8,12 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 alpaca-py = "^0.10.0"
-python-dotenv = "^1.0.0"
-black = "^23.9.1"
+python-dotenv = "^1.1.0"
+black = "^23.12.1"
 flask = "^2.3.3"
 werkzeug = "^2.3.7"
-functions-framework = "^3.4.0"
-google-cloud-logging = "^3.7.0"
+functions-framework = "^3.8.3"
+google-cloud-logging = "^3.12.1"
 
 
 [tool.poetry.group.dev.dependencies]
