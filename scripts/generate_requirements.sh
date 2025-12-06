@@ -1,1 +1,1 @@
-poetry export --format=requirements.txt > requirements.txt
+uv pip freeze > requirements.txt
