@@ -9,6 +9,7 @@ dependencies = [
     "flask>=3.1.2",
     "functions-framework>=3.10.0",
     "google-cloud-logging>=3.12.1",
+    "protobuf>=6.33.5",
     "python-dotenv>=1.2.1",
     "urllib3>=2.6.3",
     "werkzeug>=3.1.4",
